@@ -1,0 +1,176 @@
+<html>
+<body>
+
+<div id="divUi">
+
+	<h3>Random Choice Maker</h3>
+	<p>
+		Specify a set of choices, one per line, in the box below,
+		set the number of choices to be made,
+		and then click the Choose button to choose
+		the specified number of options in a random order.
+	</p>
+
+	<div>
+		<label>Options to Choose From:</label>
+		<button
+			onclick="UiEventHandler.buttonOptionsClear_Clicked()"
+		>
+			Clear
+		</button>
+		<br />
+		<textarea
+			id="textareaOptions" cols="40" rows="16"
+			onchange="UiEventHandler.textareaOptions_Changed()"
+		>
+one
+two
+three
+four
+five
+		</textarea>
+	</div>
+
+	<div>
+		<label>Number of Options to Choose:</label>
+		<label>(All:</label>
+		<input
+			id="checkboxChooseAllOptions"
+			type="checkbox"
+			onchange="UiEventHandler.checkboxChooseAllOptions_Changed()"
+		/>
+		</label>)</label>
+		<br />
+		<input id="inputChoiceCount" type="number" value="1"></input>
+	</div>
+
+	<div>
+		<button onclick="UiEventHandler.buttonChoose_Clicked()">
+			Make Specified Number of Random Choices
+		</button>
+	</div>
+
+	<div>
+		<label>Random Selections Chosen:</label>
+		<br />
+		<textarea id="textareaChoices" cols="40" rows="16"></textarea>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+class UiEventHandler
+{
+	static buttonChoose_Clicked()
+	{
+		var d = document;
+
+		var textareaOptions =
+			d.getElementById("textareaOptions");
+		var optionsAsString = textareaOptions.value;
+		var optionsAsLines = optionsAsString.split("\n");
+		optionsAsLines = optionsAsLines.filter(x => x.trim() != "");
+
+		var inputChoiceCount =
+			d.getElementById("inputChoiceCount");
+		var choiceCount = parseFloat(inputChoiceCount.value);
+		if (choiceCount > optionsAsLines.length)
+		{
+			choiceCount = optionsAsLines.length
+		}
+
+		var optionsChosen = [];
+
+		while (optionsChosen.length < choiceCount)
+		{
+			var randomNumber = Math.random();
+			var optionToChooseIndex =
+				Math.floor(randomNumber * optionsAsLines.length);
+			var optionChosen =
+				optionsAsLines[optionToChooseIndex];
+
+			optionsChosen.push(optionChosen);
+
+			optionsAsLines.splice
+			(
+				optionsAsLines.indexOf(optionChosen), 1
+			);
+		}
+
+		var textareaChoices =
+			d.getElementById("textareaChoices");
+		textareaChoices.value = optionsChosen.join("\n");
+	}
+
+	static buttonOptionsClear_Clicked()
+	{
+		var d = document;
+		var textareaOptions =
+			d.getElementById("textareaOptions");
+		textareaOptions.value = "";
+	}
+
+	static checkboxChooseAllOptions_Changed()
+	{
+		var d = document;
+
+		var checkboxChooseAllOptions =
+			d.getElementById("checkboxChooseAllOptions");
+		var shouldAllOptionsBeChosen =
+			checkboxChooseAllOptions.checked;
+
+		var choiceCount;
+		
+		if (shouldAllOptionsBeChosen)
+		{
+			var textareaOptions =
+				d.getElementById("textareaOptions");
+			var optionsAsString = textareaOptions.value;
+			var optionsAsLines = optionsAsString.split("\n");
+			optionsAsLines =
+				optionsAsLines.filter(x => x.trim() != "");
+			var optionsCount = optionsAsLines.length;
+			choiceCount = optionsCount;
+		}
+		else
+		{
+			choiceCount = 1;
+		}
+
+		var inputChoiceCount =
+			d.getElementById("inputChoiceCount");
+		inputChoiceCount.value = choiceCount;
+		inputChoiceCount.disabled = shouldAllOptionsBeChosen;
+	}
+
+	static textareaOptions_Changed()
+	{
+		var d = document;
+
+		var checkboxChooseAllOptions =
+			d.getElementById("checkboxChooseAllOptions");
+		var shouldAllOptionsBeChosen =
+			checkboxChooseAllOptions.checked;
+
+		if (shouldAllOptionsBeChosen)
+		{
+			var textareaOptions =
+				d.getElementById("textareaOptions");
+			var optionsAsString = textareaOptions.value;
+			var optionsAsLines = optionsAsString.split("\n");
+			optionsAsLines =
+				optionsAsLines.filter(x => x.trim() != "");
+			var optionCount = optionsAsLines.length;
+
+			var inputChoiceCount =
+				d.getElementById("inputChoiceCount");
+			inputChoiceCount.value = optionCount;
+		}
+	}
+}
+
+</script>
+
+</body>
+</html>
